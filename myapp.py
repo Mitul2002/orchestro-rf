@@ -6,7 +6,7 @@ import pandas as pd
 app = FastAPI()
 
 # Define the file path for the contract data
-file_path = '/home/miso/Documents/werk/Contract Discounts (2).xlsx'
+file_path = './Contract Discounts (2).xlsx'
 
 # Functions from the previous logic
 def select_carrier_and_spend(carrier_name, annual_spend, tolerance=0.1):
