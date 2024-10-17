@@ -41,11 +41,22 @@ def process_contracts(file_path, input_carrier, input_annual_spend, tolerance):
     else:
         return pd.DataFrame()
 
-def clean_contract_data(df):
-    df_cleaned = df.iloc[:, :3]
-    df_cleaned.columns = ['Service Level', 'Weight Range', 'Discount Rate']
-    df_cleaned = df_cleaned.dropna(subset=['Service Level', 'Discount Rate'])
-    return df_cleaned
+def clean_and_summarize(contracts_df):
+    contracts_df.loc[:, 'Discount Rate'] = pd.to_numeric(contracts_df['Discount Rate'], errors='coerce')
+    contracts_df = contracts_df.dropna(subset=['Discount Rate'])
+
+    # Group by 'Service Level' and aggregate
+    summary = contracts_df.groupby('Service Level').agg(
+        Average_Discount=('Discount Rate', 'mean'),
+        Min_Discount=('Discount Rate', 'min'),
+        Max_Discount=('Discount Rate', 'max'),
+        Contracts_Count=('Discount Rate', 'count'),
+        Discount_Values=('Discount Rate', lambda x: list(x))  # Collecting discount values
+    ).reset_index()
+
+    # Renaming columns for output
+    summary.columns = ['Service Level', 'Average Discount', 'Min Discount', 'Max Discount', 'Contracts Count', 'Discount Values']
+    return summary
 
 def clean_and_summarize(contracts_df):
     contracts_df['Discount Rate'] = pd.to_numeric(contracts_df['Discount Rate'], errors='coerce')
@@ -79,3 +90,4 @@ def get_discounts(query: ContractQuery):
     
     # Return the summary as JSON response
     return discount_data.to_dict(orient="records")
+    
