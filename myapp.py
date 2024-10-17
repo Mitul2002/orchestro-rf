@@ -14,6 +14,7 @@ file_path = './Contract Discounts (2).xlsx'
 def read_root():
     return {"message": "Welcome to the Contract Discount API. Use the /get-discounts/ endpoint."}
 
+
 # Functions from the previous logic
 def select_carrier_and_spend(carrier_name, annual_spend, tolerance=0.1):
     return process_contracts(file_path, carrier_name, annual_spend, tolerance)
